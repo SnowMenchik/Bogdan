@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Главная — Попутка ИИ{% endblock %}
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 mb-3"><i class="bi bi-car-front-fill text-primary"></i> Попутка ИИ</h1>
+    <p class="lead text-muted">Студенческий райдшеринг с умным AI-матчингом</p>
+    <hr class="my-4">
+    <p>Найди попутчиков по пути в университет или подвези студентов — выгодно и удобно!</p>
+    {% if not current_user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg me-2">Зарегистрироваться</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Войти</a>
+        </div>
+    {% else %}
+        <div class="mt-4">
+            <a href="{{ url_for('rides.create_request_page') }}" class="btn btn-success btn-lg me-2">
+                <i class="bi bi-search"></i> Найти поездку
+            </a>
+            <a href="{{ url_for('rides.create_route_page') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle"></i> Предложить маршрут
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-robot display-1 text-primary"></i>
+                <h5 class="card-title mt-3">AI-матчинг</h5>
+                <p class="card-text">Умный подбор попутчиков с учётом маршрута, времени, предпочтений и рейтингов.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-heart-fill display-1 text-danger"></i>
+                <h5 class="card-title mt-3">QoL для пассажиров</h5>
+                <p class="card-text">Выбирай музыку, разговорчивость, кондиционер — едь с комфортом.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="bi bi-shield-check display-1 text-success"></i>
+                <h5 class="card-title mt-3">QWL для водителей</h5>
+                <p class="card-text">Контроль нагрузки, режим «По пути домой», бонусы за непиковые часы.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

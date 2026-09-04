@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Создать маршрут — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Создать маршрут</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="POST" action="{{ url_for('rides.create_route_page') }}">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="start_point" class="form-label">Откуда</label>
+                    <input type="text" class="form-control" id="start_point" name="start_point" required placeholder="Уралмаш">
+                </div>
+                <div class="col-md-6">
+                    <label for="end_point" class="form-label">Куда</label>
+                    <input type="text" class="form-control" id="end_point" name="end_point" required placeholder="УрФУ">
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="departure_time" class="form-label">Время отправления</label>
+                    <input type="time" class="form-control" id="departure_time" name="departure_time" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="ride_date" class="form-label">Дата (опционально)</label>
+                    <input type="date" class="form-control" id="ride_date" name="ride_date">
+                </div>
+                <div class="col-md-4">
+                    <label for="available_seats" class="form-label">Мест</label>
+                    <input type="number" class="form-control" id="available_seats" name="available_seats" min="1" max="8" value="3" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Дни недели</label>
+                <div class="d-flex flex-wrap gap-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="0" id="d0">
+                        <label class="form-check-label" for="d0">Пн</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="1" id="d1">
+                        <label class="form-check-label" for="d1">Вт</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="2" id="d2">
+                        <label class="form-check-label" for="d2">Ср</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="3" id="d3">
+                        <label class="form-check-label" for="d3">Чт</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="4" id="d4">
+                        <label class="form-check-label" for="d4">Пт</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="5" id="d5">
+                        <label class="form-check-label" for="d5">Сб</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="days" value="6" id="d6">
+                        <label class="form-check-label" for="d6">Вс</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <h5>Предпочтения поездки</h5>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="music_pref" class="form-label">Музыка</label>
+                    <select class="form-select" id="music_pref" name="music_pref">
+                        <option value="neutral" selected>Не важно</option>
+                        <option value="love">Люблю музыку</option>
+                        <option value="no">Без музыки</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="talk_pref" class="form-label">Разговорчивость</label>
+                    <select class="form-select" id="talk_pref" name="talk_pref">
+                        <option value="neutral" selected>Не важно</option>
+                        <option value="talk">Люблю поболтать</option>
+                        <option value="silence">Предпочитаю тишину</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="ac_pref" class="form-label">Кондиционер</label>
+                    <select class="form-select" id="ac_pref" name="ac_pref">
+                        <option value="no_matter" selected>Не важно</option>
+                        <option value="must">Обязательно</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="smoking" name="smoking">
+                <label class="form-check-label" for="smoking">Курение допускается</label>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="zero_stress_mode" name="zero_stress_mode">
+                <label class="form-check-label" for="zero_stress_mode">
+                    Режим "По пути домой" <small class="text-muted">(без заездов во дворы, строго по маршруту)</small>
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg">Создать маршрут</button>
+        </form>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5 class="card-title">QWL — контроль нагрузки</h5>
+                <p class="card-text">Система предуприт, если суммарное время поездок за день превысит ваш лимит ({{ current_user.max_daily_hours }} ч).</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

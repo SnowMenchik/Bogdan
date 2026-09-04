@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Результаты матчинга — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Результаты поиска</h2>
+
+<p class="text-muted">
+    Запрос: <strong>{{ request.start_point }}</strong> &rarr; <strong>{{ request.end_point }}</strong>
+    на {{ request.desired_departure_time.strftime('%d.%m.%Y %H:%M') }}
+</p>
+
+{% if matches %}
+    <div class="row">
+        {% for m in matches %}
+            <div class="col-md-6 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-person-circle"></i> {{ m.driver.full_name }}
+                        </h5>
+                        {% if m.driver.car_model %}
+                            <p class="text-muted mb-1">
+                                <i class="bi bi-car-front-fill"></i> {{ m.driver.car_color or '' }} {{ m.driver.car_model or '' }}
+                            </p>
+                        {% endif %}
+                        <p class="mb-1">
+                            <strong>Маршрут:</strong> {{ m.ride.start_point }} &rarr; {{ m.ride.end_point }}<br>
+                            <strong>Время:</strong> {{ m.ride.departure_datetime.strftime('%d.%m.%Y %H:%M') }}<br>
+                            <strong>Цена:</strong> {{ m.ride.price_per_seat }} руб.
+                            {% if m.ride.bonus_applied %}
+                                <span class="badge bg-warning">Бонус</span>
+                            {% endif %}
+                        </p>
+                        <div class="mb-2">
+                            <span class="badge bg-success">{{ m.compatibility }}% совместимости</span>
+                        </div>
+                        <p class="text-muted small">{{ m.explanation }}</p>
+
+                        <p class="mb-1">
+                            <small>
+                                Чистота: {{ (m.driver.ratings_received | selectattr('rating_type', 'equalto', 'passenger_to_driver') | map(attribute='cleanliness') | list | average if m.driver.ratings_received | selectattr('rating_type', 'equalto', 'passenger_to_driver') | list else 'N/A') }} |
+                                Вождение: N/A |
+                                Комфорт: N/A
+                            </small>
+                        </p>
+
+                        <form method="POST" action="{{ url_for('matching.accept_match', match_id=0) }}" class="d-inline">
+                            <button type="submit" class="btn btn-success" onclick="this.form.action='{{ url_for('matching.accept_match', match_id=0) }}'.replace('0', '{{ m.ride.id }}')">
+                                <i class="bi bi-check-circle"></i> Принять
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('matching.reject_match', match_id=0) }}" class="d-inline">
+                            <button type="submit" class="btn btn-outline-secondary" onclick="this.form.action='{{ url_for('matching.reject_match', match_id=0) }}'.replace('0', '{{ m.ride.id }}')">
+                                Отклонить
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        К сожалению, подходящих поездок не найдено. Попробуйте увеличить гибкость времени или создать свой запрос.
+    </div>
+{% endif %}
+
+<a href="{{ url_for('rides.ride_list') }}" class="btn btn-secondary mt-3">Назад</a>
+{% endblock %}

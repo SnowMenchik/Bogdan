@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Детали поездки — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Детали поездки</h2>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h4 class="card-title">{{ ride.start_point }} &rarr; {{ ride.end_point }}</h4>
+        <p class="card-text">
+            <strong>Дата и время:</strong> {{ ride.departure_datetime.strftime('%d.%m.%Y %H:%M') }}<br>
+            <strong>Статус:</strong>
+            <span class="badge bg-{{ 'success' if ride.status == 'completed' else 'primary' if ride.status == 'planned' else 'warning' if ride.status == 'active' else 'secondary' }}">
+                {{ ride.status }}
+            </span><br>
+            <strong>Мест:</strong> {{ ride.seats_available }}/{{ ride.seats_total }}<br>
+            <strong>Цена:</strong> {{ ride.price_per_seat }} руб.
+            {% if ride.bonus_applied %}
+                <span class="badge bg-warning">Бонус применён</span>
+            {% endif %}
+            {% if ride.zero_stress_mode %}
+                <span class="badge bg-info">Режим "По пути"</span>
+            {% endif %}
+        </p>
+
+        {% if ride.driver_id == current_user.id %}
+            <div class="mt-3">
+                {% if ride.status == 'planned' %}
+                    <form method="POST" action="{{ url_for('rides.ride_detail', ride_id=ride.id) }}" class="d-inline">
+                        <button type="submit" name="action" value="start" class="btn btn-warning">Начать поездку</button>
+                    </form>
+                {% endif %}
+                {% if ride.status == 'active' or ride.status == 'planned' %}
+                    <form method="POST" action="{{ url_for('rides.complete_ride', ride_id=ride.id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-success">Завершить поездку</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('rides.cancel_ride', ride_id=ride.id) }}" class="d-inline" onsubmit="return confirm('Отменить поездку? Все пассажиры будут уведомлены.')">
+                        <button type="submit" class="btn btn-danger">Отменить</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% else %}
+            {% if ride.status == 'active' %}
+                <form method="POST" action="{{ url_for('emergency.sos', ride_id=ride.id) }}" class="d-inline mt-2">
+                    <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('Вы уверены? SOS сигнал будет отправлен экстренным контактам!')">
+                        <i class="bi bi-exclamation-triangle-fill"></i> SOS
+                    </button>
+                </form>
+            {% endif %}
+            {% if ride.status == 'planned' %}
+                <form method="POST" action="{{ url_for('rides.cancel_ride', ride_id=ride.id) }}" class="d-inline mt-2" onsubmit="return confirm('Отменить свой запрос?')">
+                    <button type="submit" class="btn btn-outline-danger">Отменить запрос</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% if ride.status == 'completed' %}
+    <div class="card">
+        <div class="card-header">
+            <h5>Оценить {{ 'пассажира' if ride.driver_id == current_user.id else 'водителя' }}</h5>
+        </div>
+        <div class="card-body">
+            {% set to_user_id = ride.driver_id if ride.driver_id != current_user.id else (matches[0].request.passenger_id if matches else None) %}
+            <a href="{{ url_for('ratings.rate_user', ride_id=ride.id, to_user_id=ride.driver_id if ride.driver_id != current_user.id else (matches[0].request.passenger_id if matches else 0)) }}" class="btn btn-primary">
+                Оценить {{ 'пассажира' if ride.driver_id == current_user.id else 'водителя' }}
+            </a>
+        </div>
+    </div>
+{% endif %}
+
+<a href="{{ url_for('rides.ride_list') }}" class="btn btn-secondary mt-3">Назад к списку</a>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Профиль — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Мой профиль</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('users.profile') }}">
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">ФИО</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ current_user.full_name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{ current_user.email }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Роль</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="passenger" {% if current_user.role == 'passenger' %}selected{% endif %}>Пассажир</option>
+                            <option value="driver" {% if current_user.role == 'driver' %}selected{% endif %}>Водитель</option>
+                            <option value="both" {% if current_user.role == 'both' %}selected{% endif %}>И то, и другое</option>
+                        </select>
+                    </div>
+
+                    <hr>
+                    <h5>Автомобиль (если водитель)</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="car_model" class="form-label">Модель</label>
+                            <input type="text" class="form-control" id="car_model" name="car_model" value="{{ current_user.car_model or '' }}" placeholder="Kia Rio">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="car_color" class="form-label">Цвет</label>
+                            <input type="text" class="form-control" id="car_color" name="car_color" value="{{ current_user.car_color or '' }}" placeholder="Чёрный">
+                        </div>
+                    </div>
+
+                    <hr>
+                    <h5>Экстренные контакты</h5>
+                    {% for contact in contacts %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>{{ contact.contact_type }}: {{ contact.contact_value }}</span>
+                        </div>
+                    {% endfor %}
+                    <div class="row mb-2">
+                        <div class="col-4">
+                            <select class="form-select" name="emergency_type">
+                                <option value="phone">Телефон</option>
+                                <option value="telegram">Telegram</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control" name="emergency_contact" placeholder="+7...">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
