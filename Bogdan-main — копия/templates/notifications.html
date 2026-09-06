@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Уведомления — Попутка ИИ{% endblock %}
+{% block content %}
+<div class="pt-page-header mb-4">
+    <i class="bi bi-bell-fill"></i>
+    <h2 class="mb-0">Уведомления</h2>
+</div>
+
+{% if notifications %}
+    <div class="card">
+        <div class="card-body">
+            {% for n in notifications %}
+                <div class="pt-notif-item {{ 'unread' if not n.is_read else '' }}">
+                    <span>{{ n.message }}</span>
+                    <span class="pt-notif-time">{{ n.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% else %}
+    <div class="pt-info-panel">
+        <p class="text-muted mb-0"><i class="bi bi-info-circle"></i> У вас нет уведомлений.</p>
+    </div>
+{% endif %}
+
+<a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary mt-4">
+    <i class="bi bi-arrow-left"></i> Назад в кабинет
+</a>
+{% endblock %}

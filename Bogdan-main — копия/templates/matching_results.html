@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Результаты матчинга — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-1"><i class="bi bi-stars text-primary"></i> Результаты поиска</h2>
+
+<p class="text-muted mb-4">
+    Запрос: <strong>{{ request.start_point }}</strong> &rarr; <strong>{{ request.end_point }}</strong>
+    на {{ request.desired_departure_time.strftime('%d.%m.%Y %H:%M') }}
+</p>
+
+{% if matches %}
+    <div class="row g-4">
+        {% for m in matches %}
+            <div class="col-md-6">
+                <div class="card pt-match-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="pt-avatar">{{ m.driver.full_name[0] | upper }}</span>
+                                <div>
+                                    <h5 class="card-title mb-0">{{ m.driver.full_name }}</h5>
+                                    {% if m.driver.car_model %}
+                                        <small class="text-muted">
+                                            <i class="bi bi-car-front-fill"></i> {{ m.driver.car_color or '' }} {{ m.driver.car_model or '' }}
+                                        </small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <span class="pt-compat-pill"><i class="bi bi-check-circle-fill"></i> {{ m.compatibility }}%</span>
+                        </div>
+
+                        <div class="pt-match-route mb-3">
+                            <strong>{{ m.ride.start_point }}</strong> &rarr; <strong>{{ m.ride.end_point }}</strong><br>
+                            <span class="text-muted"><i class="bi bi-clock"></i> {{ m.ride.departure_datetime.strftime('%d.%m.%Y %H:%M') }}</span>
+                            &nbsp;·&nbsp;
+                            <span class="text-muted"><i class="bi bi-cash"></i> {{ m.ride.price_per_seat }} руб.</span>
+                            {% if m.ride.bonus_applied %}
+                                <span class="badge bg-warning text-dark">Бонус</span>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-muted small mb-3">{{ m.explanation }}</p>
+
+                        <div class="pt-stat-row mb-3">
+                            <span>Чистота: <strong>{{ (m.driver.ratings_received | selectattr('rating_type', 'equalto', 'passenger_to_driver') | map(attribute='cleanliness') | list | average if m.driver.ratings_received | selectattr('rating_type', 'equalto', 'passenger_to_driver') | list else 'N/A') }}</strong></span>
+                            <span>Вождение: <strong>N/A</strong></span>
+                            <span>Комфорт: <strong>N/A</strong></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <form method="POST" action="{{ url_for('matching.accept_match', match_id=0) }}" class="flex-fill">
+                                <button type="submit" class="btn btn-success w-100" onclick="this.form.action='{{ url_for('matching.accept_match', match_id=0) }}'.replace('0', '{{ m.ride.id }}')">
+                                    <i class="bi bi-check-circle"></i> Принять
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('matching.reject_match', match_id=0) }}" class="flex-fill">
+                                <button type="submit" class="btn btn-outline-secondary w-100" onclick="this.form.action='{{ url_for('matching.reject_match', match_id=0) }}'.replace('0', '{{ m.ride.id }}')">
+                                    Отклонить
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> К сожалению, подходящих поездок не найдено. Попробуйте увеличить гибкость времени или создать свой запрос.
+    </div>
+{% endif %}
+
+<a href="{{ url_for('rides.ride_list') }}" class="btn btn-outline-secondary mt-4">
+    <i class="bi bi-arrow-left"></i> Назад
+</a>
+{% endblock %}

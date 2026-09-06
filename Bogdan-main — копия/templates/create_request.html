@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Найти поездку — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-1"><i class="bi bi-search text-primary"></i> Найти поездку</h2>
+<p class="text-muted mb-4">Заполните форму или опишите поездку словами — AI подберёт лучших попутчиков.</p>
+
+<ul class="nav nav-tabs pt-tabs mb-0" id="requestTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="structured-tab" data-bs-toggle="tab" data-bs-target="#structured" type="button">
+            <i class="bi bi-ui-checks-grid"></i> Форма поиска
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="text-tab" data-bs-toggle="tab" data-bs-target="#text" type="button">
+            <i class="bi bi-robot"></i> Текстовый запрос
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content bg-white border border-top-0 rounded-bottom p-4 shadow-sm mb-4" id="requestTabContent">
+    <!-- Structured form -->
+    <div class="tab-pane fade show active" id="structured">
+        <form method="POST" action="{{ url_for('rides.create_request_page') }}">
+
+            <div class="pt-section-title mt-0"><span class="num">1</span> Маршрут</div>
+            <div class="pt-route-fields mb-3">
+                <div class="pt-route-icons">
+                    <span class="dot"></span>
+                    <span class="line"></span>
+                    <span class="dot end"></span>
+                </div>
+                <div class="flex-fill">
+                    <div class="mb-3">
+                        <label for="start_point" class="form-label">Откуда</label>
+                        <input type="text" class="form-control" id="start_point" name="start_point" required placeholder="Уралмаш" value="{{ parsed.start_point if parsed else '' }}">
+                    </div>
+                    <div class="mb-0">
+                        <label for="end_point" class="form-label">Куда</label>
+                        <input type="text" class="form-control" id="end_point" name="end_point" required placeholder="УрФУ" value="{{ parsed.end_point if parsed else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-section-title"><span class="num">2</span> Время и места</div>
+            <div class="row mb-2">
+                <div class="col-md-4 mb-3">
+                    <label for="desired_time" class="form-label">Желаемое время</label>
+                    <input type="datetime-local" class="form-control" id="desired_time" name="desired_time" required value="{{ parsed.time if parsed and parsed.time else '' }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="flexibility" class="form-label">Гибкость (± минут)</label>
+                    <input type="number" class="form-control" id="flexibility" name="flexibility" min="0" max="60" value="{{ parsed.flexibility if parsed else 15 }}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="seats" class="form-label">Нужно мест</label>
+                    <input type="number" class="form-control" id="seats" name="seats" min="1" max="8" value="{{ parsed.seats if parsed else 1 }}">
+                </div>
+            </div>
+
+            <div class="pt-section-title"><span class="num">3</span> Ваши предпочтения</div>
+            <div class="row mb-3">
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <label for="music_pref" class="form-label">Музыка</label>
+                    <select class="form-select" id="music_pref" name="music_pref">
+                        <option value="neutral">Не важно</option>
+                        <option value="love">Люблю музыку</option>
+                        <option value="no">Без музыки</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3 mb-md-0">
+                    <label for="talk_pref" class="form-label">Разговорчивость</label>
+                    <select class="form-select" id="talk_pref" name="talk_pref">
+                        <option value="neutral">Не важно</option>
+                        <option value="talk">Люблю поболтать</option>
+                        <option value="silence">Предпочитаю тишину</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="ac_pref" class="form-label">Кондиционер</label>
+                    <select class="form-select" id="ac_pref" name="ac_pref">
+                        <option value="no_matter">Не важно</option>
+                        <option value="must">Обязательно</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+                <input class="form-check-input" type="checkbox" id="smoking" name="smoking">
+                <label class="form-check-label" for="smoking">Не курю</label>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-lg">
+                <i class="bi bi-search"></i> Найти попутчика
+            </button>
+        </form>
+    </div>
+
+    <!-- Text input -->
+    <div class="tab-pane fade" id="text">
+        <div class="pt-info-panel">
+            <h5 class="mb-2"><i class="bi bi-robot"></i> Опишите поездку своими словами</h5>
+            <p class="text-muted mb-3">Например: «Еду в 8:20 от Уралмаша до УрФУ, могу взять 2 человек, гибкость 20 минут»</p>
+            <form method="POST" action="{{ url_for('rides.parse_text') }}">
+                <div class="mb-3">
+                    <textarea class="form-control" id="text_query" name="text" rows="3" placeholder="Еду в 8:20 от Уралмаша до УрФУ, могу взять 2 человек, гибкость 20 минут"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-robot"></i> Распознать</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

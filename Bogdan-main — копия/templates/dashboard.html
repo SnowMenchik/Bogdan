@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Личный кабинет — Попутка ИИ{% endblock %}
+{% block content %}
+<div class="pt-page-header mb-4">
+    <span class="pt-mini-avatar" style="width:44px;height:44px;font-size:1.1rem;">{{ current_user.full_name[0] | upper }}</span>
+    <h2 class="mb-0">Добро пожаловать, {{ current_user.full_name }}!</h2>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-signpost-split"></i> Мои маршруты</span>
+                <a href="{{ url_for('rides.create_route_page') }}" class="btn btn-sm btn-primary">+ Создать</a>
+            </div>
+            <div class="card-body">
+                {% if my_rides %}
+                    {% for ride in my_rides %}
+                        <div class="pt-list-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ ride.start_point }}</strong> &rarr; <strong>{{ ride.end_point }}</strong>
+                                <div class="pt-list-meta">{{ ride.departure_datetime.strftime('%d.%m.%Y %H:%M') }}</div>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-{{ 'success' if ride.status == 'completed' else 'primary' if ride.status == 'planned' else 'warning' if ride.status == 'active' else 'secondary' }}">{{ ride.status }}</span>
+                                <a href="{{ url_for('rides.ride_detail', ride_id=ride.id) }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">У вас пока нет маршрутов.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-search"></i> Мои запросы</span>
+                <a href="{{ url_for('rides.create_request_page') }}" class="btn btn-sm btn-success">+ Найти</a>
+            </div>
+            <div class="card-body">
+                {% if my_requests %}
+                    {% for req in my_requests %}
+                        <div class="pt-list-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ req.start_point }}</strong> &rarr; <strong>{{ req.end_point }}</strong>
+                                <div class="pt-list-meta">{{ req.desired_departure_time.strftime('%d.%m.%Y %H:%M') }}</div>
+                            </div>
+                            <span class="badge bg-{{ 'success' if req.status == 'matched' else 'info' if req.status == 'open' else 'secondary' }}">{{ req.status }}</span>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted mb-0">У вас пока нет запросов.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-person-circle"></i> Мой профиль</div>
+            <div class="card-body">
+                <div class="pt-summary-row"><span class="label">Email</span><span class="value">{{ current_user.email }}</span></div>
+                <div class="pt-summary-row"><span class="label">Роль</span><span class="value">{{ current_user.role }}</span></div>
+                <div class="pt-summary-row"><span class="label">Верифицирован</span><span class="value">{{ 'Да' if current_user.is_verified else 'Нет' }}</span></div>
+                <a href="{{ url_for('users.profile') }}" class="btn btn-outline-primary mt-3">Редактировать</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header"><i class="bi bi-heart-fill"></i> QoL предпочтения</div>
+            <div class="card-body">
+                <div class="pt-summary-row">
+                    <span class="label">Музыка</span>
+                    <span class="value">
+                        {% if current_user.music_pref == 'love' %}Люблю музыку
+                        {% elif current_user.music_pref == 'no' %}Без музыки
+                        {% else %}Не важно
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="pt-summary-row">
+                    <span class="label">Разговорчивость</span>
+                    <span class="value">
+                        {% if current_user.talk_pref == 'talk' %}Люблю поболтать
+                        {% elif current_user.talk_pref == 'silence' %}Предпочитаю тишину
+                        {% else %}Не важно
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="pt-summary-row">
+                    <span class="label">Кондиционер</span>
+                    <span class="value">
+                        {% if current_user.ac_pref == 'must' %}Обязательно
+                        {% else %}Не важно
+                        {% endif %}
+                    </span>
+                </div>
+                <a href="{{ url_for('users.preferences') }}" class="btn btn-outline-primary mt-3">Изменить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

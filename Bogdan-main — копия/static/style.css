@@ -1,0 +1,564 @@
+/* ==========================================================================
+   Попутка ИИ — тема «УрФУ» (сине-белая палитра)
+   ========================================================================== */
+
+:root {
+  --pt-navy:        #0a2e5c;   /* глубокий синий УрФУ — фон, заголовки */
+  --pt-blue:        #1e63c4;   /* основной синий — кнопки, ссылки */
+  --pt-sky:         #4a9eff;   /* светло-синий акцент — подсветки, ховеры */
+  --pt-ice:         #eef4ff;   /* ледяной синий — фоны блоков */
+  --pt-bg:          #f5f8fc;   /* фон страницы */
+  --pt-ink:         #142238;   /* основной текст */
+  --pt-muted:       #5b6b84;   /* второстепенный текст */
+  --pt-line:        #dbe6f5;   /* тонкие разделители/бордеры */
+  --pt-white:       #ffffff;
+  --pt-success:     #1f9d5a;
+  --pt-warning:     #e0a723;
+  --pt-radius:      14px;
+  --pt-radius-sm:   9px;
+  --pt-shadow:      0 10px 30px -12px rgba(10, 46, 92, 0.25);
+  --pt-shadow-sm:   0 4px 14px -6px rgba(10, 46, 92, 0.18);
+}
+
+/* ---------- базовые переопределения Bootstrap ---------- */
+
+body {
+  background-color: var(--pt-bg);
+  color: var(--pt-ink);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.01em;
+}
+
+h1, h2, h3, h4, h5, .display-4 {
+  font-family: "Manrope", "Inter", sans-serif;
+  font-weight: 800;
+  color: var(--pt-navy);
+  letter-spacing: -0.02em;
+}
+
+a { color: var(--pt-blue); }
+a:hover { color: var(--pt-navy); }
+
+.btn-primary {
+  background-color: var(--pt-blue);
+  border-color: var(--pt-blue);
+  box-shadow: 0 6px 16px -6px rgba(30, 99, 196, 0.55);
+}
+.btn-primary:hover, .btn-primary:focus {
+  background-color: var(--pt-navy);
+  border-color: var(--pt-navy);
+}
+.btn-outline-primary {
+  color: var(--pt-blue);
+  border-color: var(--pt-blue);
+}
+.btn-outline-primary:hover {
+  background-color: var(--pt-blue);
+  border-color: var(--pt-blue);
+}
+.btn-success {
+  background-color: var(--pt-success);
+  border-color: var(--pt-success);
+}
+.btn-lg {
+  padding: 0.8rem 1.75rem;
+  border-radius: var(--pt-radius-sm);
+  font-weight: 600;
+}
+.btn {
+  border-radius: var(--pt-radius-sm);
+  font-weight: 600;
+}
+
+.form-control, .form-select {
+  border-radius: var(--pt-radius-sm);
+  border: 1.5px solid var(--pt-line);
+  padding: 0.6rem 0.85rem;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--pt-sky);
+  box-shadow: 0 0 0 0.2rem rgba(74, 158, 255, 0.2);
+}
+.form-label {
+  font-weight: 600;
+  color: var(--pt-navy);
+  font-size: 0.92rem;
+  margin-bottom: 0.35rem;
+}
+
+.card {
+  border: none;
+  border-radius: var(--pt-radius);
+  box-shadow: var(--pt-shadow-sm);
+}
+
+.alert {
+  border-radius: var(--pt-radius-sm);
+  border: none;
+}
+
+.badge { font-weight: 600; letter-spacing: 0; }
+
+/* ---------- навигация ---------- */
+
+.navbar.pt-navbar {
+  background: linear-gradient(90deg, var(--pt-navy) 0%, #123d78 100%);
+  box-shadow: 0 4px 20px -8px rgba(10, 46, 92, 0.55);
+}
+.pt-navbar .navbar-brand {
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.pt-navbar .brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--pt-sky);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--pt-navy);
+  font-size: 1.1rem;
+}
+.pt-navbar .nav-link {
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 500;
+  border-radius: var(--pt-radius-sm);
+  padding: 0.5rem 0.9rem !important;
+  transition: background-color .15s ease, color .15s ease;
+}
+.pt-navbar .nav-link:hover,
+.pt-navbar .nav-link.active {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.pt-navbar .dropdown-menu {
+  border: none;
+  border-radius: var(--pt-radius-sm);
+  box-shadow: var(--pt-shadow);
+}
+
+/* ---------- подвал ---------- */
+
+footer.pt-footer {
+  background-color: var(--pt-navy);
+  color: rgba(255, 255, 255, 0.65);
+}
+footer.pt-footer a { color: rgba(255, 255, 255, 0.85); }
+
+/* ---------- главная страница ---------- */
+
+.pt-hero {
+  background: radial-gradient(circle at 15% 20%, #123d78 0%, var(--pt-navy) 55%, #081f42 100%);
+  border-radius: var(--pt-radius);
+  color: #fff;
+  padding: 3.5rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.pt-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.5) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+  opacity: 0.06;
+  pointer-events: none;
+}
+.pt-hero h1 {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+.pt-hero .lead {
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 40rem;
+}
+.pt-hero .badge-tag {
+  background-color: rgba(74, 158, 255, 0.18);
+  color: var(--pt-sky);
+  border: 1px solid rgba(74, 158, 255, 0.4);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+/* маршрутная "линия" — декоративный мотив (точка А --- точка Б) */
+.pt-route {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1.75rem 0;
+}
+.pt-route .pt-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--pt-sky);
+  flex-shrink: 0;
+}
+.pt-route .pt-dot.end { background: #fff; }
+.pt-route .pt-path {
+  flex: 1;
+  height: 0;
+  border-top: 2px dashed rgba(255, 255, 255, 0.35);
+}
+
+.pt-feature-card {
+  border-top: 3px solid var(--pt-sky);
+  height: 100%;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.pt-feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--pt-shadow);
+}
+.pt-feature-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--pt-ice);
+  color: var(--pt-blue);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+/* ---------- страницы входа / регистрации ---------- */
+
+.pt-auth-wrap {
+  min-height: calc(100vh - 260px);
+  display: flex;
+  align-items: center;
+}
+.pt-auth-card {
+  border-radius: var(--pt-radius);
+  overflow: hidden;
+  box-shadow: var(--pt-shadow);
+}
+.pt-auth-side {
+  background: linear-gradient(160deg, var(--pt-navy) 0%, #144a8f 100%);
+  color: #fff;
+  padding: 2.5rem;
+  position: relative;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.pt-auth-side .brand-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--pt-sky);
+  color: var(--pt-navy);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.pt-auth-side ul { list-style: none; padding-left: 0; margin-top: 1.5rem; }
+.pt-auth-side li {
+  padding: 0.35rem 0;
+  color: rgba(255,255,255,0.85);
+  font-size: 0.95rem;
+}
+.pt-auth-side li i { color: var(--pt-sky); margin-right: 0.5rem; }
+.pt-auth-form { padding: 2.5rem; }
+
+/* ---------- формы маршрута / запроса ---------- */
+
+.pt-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--pt-navy);
+  margin: 1.75rem 0 1rem;
+}
+.pt-section-title .num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--pt-ice);
+  color: var(--pt-blue);
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.pt-route-fields {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.pt-route-fields .pt-route-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding-top: 1.9rem;
+}
+.pt-route-fields .pt-route-icons .dot {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--pt-blue);
+}
+.pt-route-fields .pt-route-icons .dot.end { background: var(--pt-sky); }
+.pt-route-fields .pt-route-icons .line {
+  width: 2px; height: 34px; background: var(--pt-line);
+}
+
+.pt-day-toggle .btn-check + .btn {
+  border-radius: 999px;
+  min-width: 48px;
+  border-color: var(--pt-line);
+  color: var(--pt-navy);
+  font-weight: 600;
+}
+.pt-day-toggle .btn-check:checked + .btn {
+  background-color: var(--pt-blue);
+  border-color: var(--pt-blue);
+  color: #fff;
+}
+
+.pt-info-panel {
+  background: var(--pt-ice);
+  border-radius: var(--pt-radius);
+  padding: 1.5rem;
+  border: 1px solid var(--pt-line);
+}
+.pt-info-panel i { color: var(--pt-blue); }
+
+/* переключатель вкладок "форма / текст" */
+.pt-tabs .nav-link {
+  border: none;
+  border-radius: var(--pt-radius-sm) var(--pt-radius-sm) 0 0;
+  color: var(--pt-muted);
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+}
+.pt-tabs .nav-link.active {
+  color: var(--pt-navy);
+  background: #fff;
+  box-shadow: 0 -3px 0 0 var(--pt-blue) inset;
+}
+
+/* ---------- результаты матчинга ---------- */
+
+.pt-match-card {
+  border-left: 4px solid var(--pt-sky);
+  height: 100%;
+}
+.pt-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--pt-ice);
+  color: var(--pt-blue);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.pt-compat-pill {
+  background: var(--pt-ice);
+  color: var(--pt-navy);
+  border: 1px solid var(--pt-line);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.pt-compat-pill i { color: var(--pt-success); }
+.pt-match-route {
+  background: var(--pt-bg);
+  border-radius: var(--pt-radius-sm);
+  padding: 0.75rem 1rem;
+  font-size: 0.92rem;
+}
+.pt-stat-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: var(--pt-muted);
+}
+.pt-stat-row span strong { color: var(--pt-ink); }
+
+/* ---------- звёздный рейтинг (rate_user) ---------- */
+
+.pt-stars {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 2px;
+}
+.pt-stars input { display: none; }
+.pt-stars label {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: var(--pt-line);
+  cursor: pointer;
+  transition: color .12s ease;
+}
+.pt-stars label::before { content: "\2605"; } /* ★ */
+.pt-stars input:checked ~ label,
+.pt-stars label:hover,
+.pt-stars label:hover ~ label {
+  color: #f5a524;
+}
+.pt-rating-block {
+  background: var(--pt-bg);
+  border-radius: var(--pt-radius-sm);
+  border: 1px solid var(--pt-line);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  height: 100%;
+}
+.pt-rating-block label.pt-crit-label {
+  display: block;
+  font-weight: 600;
+  color: var(--pt-navy);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+/* ---------- заголовок страницы (кабинет / профиль / поездки и т.д.) ---------- */
+
+.pt-page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.pt-page-header i { color: var(--pt-blue); font-size: 1.35rem; }
+
+/* переопределение card-header в едином стиле */
+.card-header {
+  background: #fff;
+  border-bottom: 1px solid var(--pt-line);
+  font-weight: 700;
+  color: var(--pt-navy);
+  border-radius: var(--pt-radius) var(--pt-radius) 0 0 !important;
+}
+
+/* ---------- списки маршрутов / запросов (dashboard, ride_list) ---------- */
+
+.pt-list-item {
+  display: block;
+  border: none;
+  border-left: 3px solid transparent;
+  border-radius: var(--pt-radius-sm);
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.6rem;
+  background: var(--pt-bg);
+  transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
+  text-decoration: none;
+  color: inherit;
+}
+.pt-list-item:last-child { margin-bottom: 0; }
+a.pt-list-item:hover {
+  border-left-color: var(--pt-sky);
+  background: var(--pt-ice);
+  transform: translateX(3px);
+  color: inherit;
+}
+.pt-list-item .pt-list-meta {
+  font-size: 0.85rem;
+  color: var(--pt-muted);
+}
+
+.pt-mini-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--pt-ice);
+  color: var(--pt-blue);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.pt-summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.55rem 0;
+  border-bottom: 1px dashed var(--pt-line);
+  font-size: 0.95rem;
+}
+.pt-summary-row:last-of-type { border-bottom: none; }
+.pt-summary-row span.label { color: var(--pt-muted); }
+.pt-summary-row span.value { font-weight: 600; color: var(--pt-ink); }
+
+/* ---------- уведомления ---------- */
+
+.pt-notif-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  border: none;
+  border-left: 3px solid transparent;
+  border-radius: var(--pt-radius-sm);
+  padding: 0.9rem 1.1rem;
+  margin-bottom: 0.6rem;
+  background: var(--pt-bg);
+}
+.pt-notif-item.unread {
+  border-left-color: var(--pt-sky);
+  background: var(--pt-ice);
+}
+.pt-notif-item .pt-notif-time {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: var(--pt-muted);
+}
+
+/* ---------- деталка поездки ---------- */
+
+.pt-route-banner {
+  background: linear-gradient(135deg, var(--pt-navy) 0%, #123d78 100%);
+  border-radius: var(--pt-radius);
+  color: #fff;
+  padding: 1.75rem 2rem;
+}
+.pt-route-banner h4 { color: #fff; margin-bottom: 0.5rem; }
+.pt-route-banner .pt-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 0.92rem;
+  color: rgba(255,255,255,0.85);
+  margin-top: 0.75rem;
+}
+.pt-route-banner .pt-meta strong { color: #fff; }
+
+/* ---------- адаптивность ---------- */
+
+@media (max-width: 767.98px) {
+  .pt-hero { padding: 2.25rem 1.5rem; text-align: center; }
+  .pt-route { justify-content: center; }
+  .pt-auth-side { display: none; }
+  .pt-auth-form { padding: 1.75rem; }
+  .pt-route-fields .pt-route-icons { display: none; }
+  .pt-route-banner { padding: 1.5rem; }
+  .pt-list-item { padding: 0.75rem 0.9rem; }
+}

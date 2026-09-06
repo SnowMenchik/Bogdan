@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Подтверждение email — Попутка ИИ{% endblock %}
+{% block content %}
+<div class="pt-auth-wrap">
+<div class="row justify-content-center w-100">
+    <div class="col-md-6 col-lg-4">
+        <div class="card pt-auth-card border-0">
+            <div class="card-body p-4">
+                <div class="text-center mb-3">
+                    <span class="brand-mark d-inline-flex" style="width:56px;height:56px;font-size:1.5rem;background:var(--pt-ice);color:var(--pt-blue);border-radius:14px;align-items:center;justify-content:center;">
+                        <i class="bi bi-envelope-check"></i>
+                    </span>
+                </div>
+                <h2 class="text-center mb-2">Подтверждение email</h2>
+                <p class="text-muted text-center mb-4">Введите код, отправленный на ваш email.</p>
+
+                {% if mock_code %}
+                    <div class="pt-info-panel text-center mb-4">
+                        <small class="text-muted d-block mb-1">Mock код (для теста)</small>
+                        <strong style="font-size:1.4rem; letter-spacing: 0.2em; color: var(--pt-navy);">{{ mock_code }}</strong>
+                    </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('auth.verify') }}">
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Код подтверждения</label>
+                        <input type="text" class="form-control text-center" id="code" name="code" required maxlength="10" style="font-size:1.2rem; letter-spacing: 0.15em;">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 btn-lg">Подтвердить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
