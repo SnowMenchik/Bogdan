@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Главная — Попутка ИИ{% endblock %}
+{% block content %}
+
+<div class="pt-hero">
+    <span class="badge-tag"><i class="bi bi-mortarboard-fill"></i> Для студентов УрФУ</span>
+    <h1 class="mt-3 mb-3">Попутка ИИ</h1>
+    <p class="lead">
+        Студенческий райдшеринг с умным AI-матчингом: находите попутчиков по пути в университет
+        или подвозите тех, кто едет туда же — выгодно и удобно.
+    </p>
+
+    <div class="pt-route">
+        <span class="pt-dot"></span>
+        <span class="pt-path"></span>
+        <i class="bi bi-car-front-fill" style="color:#fff; font-size:1.1rem;"></i>
+        <span class="pt-path"></span>
+        <span class="pt-dot end"></span>
+    </div>
+
+    {% if not current_user.is_authenticated %}
+        <div class="mt-2 d-flex flex-wrap gap-2">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg text-primary fw-bold">Зарегистрироваться</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">Войти</a>
+        </div>
+    {% else %}
+        <div class="mt-2 d-flex flex-wrap gap-2">
+            <a href="{{ url_for('rides.create_request_page') }}" class="btn btn-light btn-lg text-primary fw-bold">
+                <i class="bi bi-search"></i> Найти поездку
+            </a>
+            <a href="{{ url_for('rides.create_route_page') }}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-plus-circle"></i> Предложить маршрут
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="row mt-5 g-4">
+    <div class="col-md-4">
+        <div class="card pt-feature-card">
+            <div class="card-body">
+                <div class="pt-feature-icon"><i class="bi bi-robot"></i></div>
+                <h5 class="card-title">AI-матчинг</h5>
+                <p class="card-text text-muted">Умный подбор попутчиков с учётом маршрута, времени, предпочтений и рейтингов.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card pt-feature-card">
+            <div class="card-body">
+                <div class="pt-feature-icon"><i class="bi bi-heart-fill"></i></div>
+                <h5 class="card-title">QoL для пассажиров</h5>
+                <p class="card-text text-muted">Выбирайте музыку, разговорчивость, кондиционер — езжайте с комфортом.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card pt-feature-card">
+            <div class="card-body">
+                <div class="pt-feature-icon"><i class="bi bi-shield-check"></i></div>
+                <h5 class="card-title">QWL для водителей</h5>
+                <p class="card-text text-muted">Контроль нагрузки, режим «По пути домой», бонусы за непиковые часы.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

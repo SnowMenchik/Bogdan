@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}Оценить пользователя — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-1"><i class="bi bi-star-fill text-primary"></i> Оценить {{ 'пассажира' if is_driver else 'водителя' }}</h2>
+<p class="text-muted mb-4">Поездка: {{ ride.start_point }} &rarr; {{ ride.end_point }}</p>
+
+<div class="card">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <span class="pt-avatar">{{ to_user.full_name[0] | upper }}</span>
+            <h5 class="card-title mb-0">{{ to_user.full_name }}</h5>
+        </div>
+
+        <form method="POST" action="{{ url_for('ratings.rate_user', ride_id=ride.id, to_user_id=to_user.id) }}">
+            {% if is_driver %}
+                <!-- Driver rating passenger -->
+                <h6 class="text-muted mb-3">Критерии оценки пассажира</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Вежливость</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="politeness5" name="politeness" value="5" checked><label for="politeness5"></label>
+                                <input type="radio" id="politeness4" name="politeness" value="4"><label for="politeness4"></label>
+                                <input type="radio" id="politeness3" name="politeness" value="3"><label for="politeness3"></label>
+                                <input type="radio" id="politeness2" name="politeness" value="2"><label for="politeness2"></label>
+                                <input type="radio" id="politeness1" name="politeness" value="1"><label for="politeness1"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Пунктуальность</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="punctuality_passenger5" name="punctuality_passenger" value="5" checked><label for="punctuality_passenger5"></label>
+                                <input type="radio" id="punctuality_passenger4" name="punctuality_passenger" value="4"><label for="punctuality_passenger4"></label>
+                                <input type="radio" id="punctuality_passenger3" name="punctuality_passenger" value="3"><label for="punctuality_passenger3"></label>
+                                <input type="radio" id="punctuality_passenger2" name="punctuality_passenger" value="2"><label for="punctuality_passenger2"></label>
+                                <input type="radio" id="punctuality_passenger1" name="punctuality_passenger" value="1"><label for="punctuality_passenger1"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Аккуратность</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="tidiness5" name="tidiness" value="5" checked><label for="tidiness5"></label>
+                                <input type="radio" id="tidiness4" name="tidiness" value="4"><label for="tidiness4"></label>
+                                <input type="radio" id="tidiness3" name="tidiness" value="3"><label for="tidiness3"></label>
+                                <input type="radio" id="tidiness2" name="tidiness" value="2"><label for="tidiness2"></label>
+                                <input type="radio" id="tidiness1" name="tidiness" value="1"><label for="tidiness1"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Passenger rating driver -->
+                <h6 class="text-muted mb-3">Критерии оценки водителя</h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Чистота</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="cleanliness5" name="cleanliness" value="5" checked><label for="cleanliness5"></label>
+                                <input type="radio" id="cleanliness4" name="cleanliness" value="4"><label for="cleanliness4"></label>
+                                <input type="radio" id="cleanliness3" name="cleanliness" value="3"><label for="cleanliness3"></label>
+                                <input type="radio" id="cleanliness2" name="cleanliness" value="2"><label for="cleanliness2"></label>
+                                <input type="radio" id="cleanliness1" name="cleanliness" value="1"><label for="cleanliness1"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Стиль вождения</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="driving_style5" name="driving_style" value="5" checked><label for="driving_style5"></label>
+                                <input type="radio" id="driving_style4" name="driving_style" value="4"><label for="driving_style4"></label>
+                                <input type="radio" id="driving_style3" name="driving_style" value="3"><label for="driving_style3"></label>
+                                <input type="radio" id="driving_style2" name="driving_style" value="2"><label for="driving_style2"></label>
+                                <input type="radio" id="driving_style1" name="driving_style" value="1"><label for="driving_style1"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Комфорт</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="comfort5" name="comfort" value="5" checked><label for="comfort5"></label>
+                                <input type="radio" id="comfort4" name="comfort" value="4"><label for="comfort4"></label>
+                                <input type="radio" id="comfort3" name="comfort" value="3"><label for="comfort3"></label>
+                                <input type="radio" id="comfort2" name="comfort" value="2"><label for="comfort2"></label>
+                                <input type="radio" id="comfort1" name="comfort" value="1"><label for="comfort1"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Коммуникация</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="communication5" name="communication" value="5" checked><label for="communication5"></label>
+                                <input type="radio" id="communication4" name="communication" value="4"><label for="communication4"></label>
+                                <input type="radio" id="communication3" name="communication" value="3"><label for="communication3"></label>
+                                <input type="radio" id="communication2" name="communication" value="2"><label for="communication2"></label>
+                                <input type="radio" id="communication1" name="communication" value="1"><label for="communication1"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="pt-rating-block">
+                            <label class="pt-crit-label">Пунктуальность</label>
+                            <div class="pt-stars">
+                                <input type="radio" id="punctuality5" name="punctuality" value="5" checked><label for="punctuality5"></label>
+                                <input type="radio" id="punctuality4" name="punctuality" value="4"><label for="punctuality4"></label>
+                                <input type="radio" id="punctuality3" name="punctuality" value="3"><label for="punctuality3"></label>
+                                <input type="radio" id="punctuality2" name="punctuality" value="2"><label for="punctuality2"></label>
+                                <input type="radio" id="punctuality1" name="punctuality" value="1"><label for="punctuality1"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="comment" class="form-label">Комментарий (опционально)</label>
+                <textarea class="form-control" id="comment" name="comment" rows="2" placeholder="Поделитесь впечатлениями от поездки..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-send-check"></i> Сохранить оценку
+            </button>
+        </form>
+    </div>
+</div>
+
+<a href="{{ url_for('rides.ride_detail', ride_id=ride.id) }}" class="btn btn-outline-secondary mt-4">
+    <i class="bi bi-arrow-left"></i> Назад
+</a>
+{% endblock %}

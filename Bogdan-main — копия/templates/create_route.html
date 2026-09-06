@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Создать маршрут — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-1"><i class="bi bi-plus-circle text-primary"></i> Создать маршрут</h2>
+<p class="text-muted mb-4">Расскажите, куда и когда вы едете — мы найдём вам попутчиков.</p>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('rides.create_route_page') }}">
+
+                    <div class="pt-section-title"><span class="num">1</span> Маршрут</div>
+                    <div class="pt-route-fields mb-3">
+                        <div class="pt-route-icons">
+                            <span class="dot"></span>
+                            <span class="line"></span>
+                            <span class="dot end"></span>
+                        </div>
+                        <div class="flex-fill">
+                            <div class="mb-3">
+                                <label for="start_point" class="form-label">Откуда</label>
+                                <input type="text" class="form-control" id="start_point" name="start_point" required placeholder="Уралмаш">
+                            </div>
+                            <div class="mb-0">
+                                <label for="end_point" class="form-label">Куда</label>
+                                <input type="text" class="form-control" id="end_point" name="end_point" required placeholder="УрФУ">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-section-title"><span class="num">2</span> Время и места</div>
+                    <div class="row mb-2">
+                        <div class="col-md-4 mb-3">
+                            <label for="departure_time" class="form-label">Время отправления</label>
+                            <input type="time" class="form-control" id="departure_time" name="departure_time" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="ride_date" class="form-label">Дата (опционально)</label>
+                            <input type="date" class="form-control" id="ride_date" name="ride_date">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="available_seats" class="form-label">Мест</label>
+                            <input type="number" class="form-control" id="available_seats" name="available_seats" min="1" max="8" value="3" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label d-block">Дни недели</label>
+                        <div class="d-flex flex-wrap gap-2 pt-day-toggle">
+                            <input type="checkbox" class="btn-check" name="days" value="0" id="d0" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d0">Пн</label>
+
+                            <input type="checkbox" class="btn-check" name="days" value="1" id="d1" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d1">Вт</label>
+
+                            <input type="checkbox" class="btn-check" name="days" value="2" id="d2" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d2">Ср</label>
+
+                            <input type="checkbox" class="btn-check" name="days" value="3" id="d3" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d3">Чт</label>
+
+                            <input type="checkbox" class="btn-check" name="days" value="4" id="d4" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d4">Пт</label>
+
+                            <input type="checkbox" class="btn-check" name="days" value="5" id="d5" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d5">Сб</label>
+
+                            <input type="checkbox" class="btn-check" name="days" value="6" id="d6" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="d6">Вс</label>
+                        </div>
+                    </div>
+
+                    <div class="pt-section-title"><span class="num">3</span> Предпочтения поездки</div>
+                    <div class="row mb-3">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label for="music_pref" class="form-label">Музыка</label>
+                            <select class="form-select" id="music_pref" name="music_pref">
+                                <option value="neutral" selected>Не важно</option>
+                                <option value="love">Люблю музыку</option>
+                                <option value="no">Без музыки</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <label for="talk_pref" class="form-label">Разговорчивость</label>
+                            <select class="form-select" id="talk_pref" name="talk_pref">
+                                <option value="neutral" selected>Не важно</option>
+                                <option value="talk">Люблю поболтать</option>
+                                <option value="silence">Предпочитаю тишину</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="ac_pref" class="form-label">Кондиционер</label>
+                            <select class="form-select" id="ac_pref" name="ac_pref">
+                                <option value="no_matter" selected>Не важно</option>
+                                <option value="must">Обязательно</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="smoking" name="smoking">
+                        <label class="form-check-label" for="smoking">Курение допускается</label>
+                    </div>
+
+                    <div class="form-check form-switch mb-4">
+                        <input class="form-check-input" type="checkbox" id="zero_stress_mode" name="zero_stress_mode">
+                        <label class="form-check-label" for="zero_stress_mode">
+                            Режим «По пути домой» <small class="text-muted">(без заездов во дворы, строго по маршруту)</small>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle"></i> Создать маршрут
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="pt-info-panel">
+            <h5 class="mb-2"><i class="bi bi-shield-check"></i> QWL — контроль нагрузки</h5>
+            <p class="mb-0 text-muted">
+                Система предупредит, если суммарное время поездок за день превысит ваш лимит
+                (<strong>{{ current_user.max_daily_hours }} ч</strong>).
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

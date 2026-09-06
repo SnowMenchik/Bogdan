@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Вход — Попутка ИИ{% endblock %}
+{% block content %}
+<div class="pt-auth-wrap">
+<div class="row justify-content-center w-100">
+    <div class="col-lg-8">
+        <div class="card pt-auth-card border-0">
+            <div class="row g-0">
+                <div class="col-md-5 pt-auth-side">
+                    <span class="brand-mark"><i class="bi bi-car-front-fill"></i></span>
+                    <h3 class="text-white mb-2">С возвращением!</h3>
+                    <p class="mb-0" style="color: rgba(255,255,255,0.8);">
+                        Войдите, чтобы найти попутчиков в УрФУ или предложить свободные места в машине.
+                    </p>
+                    <ul>
+                        <li><i class="bi bi-check-circle-fill"></i> AI-подбор поездок</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Только студенты УрФУ</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Рейтинги и безопасность</li>
+                    </ul>
+                </div>
+                <div class="col-md-7">
+                    <div class="pt-auth-form">
+                        <h2 class="mb-4">Вход</h2>
+                        <form method="POST" action="{{ url_for('auth.login') }}">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required placeholder="ivanov@stud.urfu.ru">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg mt-2">Войти</button>
+                        </form>
+                        <p class="text-center mt-4 mb-0">
+                            Нет аккаунта? <a href="{{ url_for('auth.register') }}">Зарегистрироваться</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

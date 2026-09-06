@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Профиль — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4"><i class="bi bi-person-circle text-primary"></i> Мой профиль</h2>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('users.profile') }}">
+                    <div class="d-flex align-items-center gap-3 mb-4">
+                        <span class="pt-avatar" style="width:56px;height:56px;font-size:1.3rem;">{{ current_user.full_name[0] | upper }}</span>
+                        <div>
+                            <div class="fw-bold" style="color:var(--pt-navy);">{{ current_user.full_name }}</div>
+                            <small class="text-muted">{{ current_user.email }}</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">ФИО</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ current_user.full_name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" value="{{ current_user.email }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Роль</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="passenger" {% if current_user.role == 'passenger' %}selected{% endif %}>Пассажир</option>
+                            <option value="driver" {% if current_user.role == 'driver' %}selected{% endif %}>Водитель</option>
+                            <option value="both" {% if current_user.role == 'both' %}selected{% endif %}>И то, и другое</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-section-title"><span class="num">1</span> Автомобиль (если водитель)</div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="car_model" class="form-label">Модель</label>
+                            <input type="text" class="form-control" id="car_model" name="car_model" value="{{ current_user.car_model or '' }}" placeholder="Kia Rio">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="car_color" class="form-label">Цвет</label>
+                            <input type="text" class="form-control" id="car_color" name="car_color" value="{{ current_user.car_color or '' }}" placeholder="Чёрный">
+                        </div>
+                    </div>
+
+                    <div class="pt-section-title"><span class="num">2</span> Экстренные контакты</div>
+                    {% if contacts %}
+                        <div class="mb-3">
+                            {% for contact in contacts %}
+                                <div class="pt-list-item d-flex justify-content-between align-items-center py-2">
+                                    <span><i class="bi bi-telephone text-primary"></i> {{ contact.contact_type }}: {{ contact.contact_value }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted small">Контакты пока не добавлены.</p>
+                    {% endif %}
+                    <div class="row g-2 mb-4">
+                        <div class="col-4">
+                            <select class="form-select" name="emergency_type">
+                                <option value="phone">Телефон</option>
+                                <option value="telegram">Telegram</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" class="form-control" name="emergency_contact" placeholder="+7...">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg">Сохранить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="pt-info-panel">
+            <h5 class="mb-2"><i class="bi bi-info-circle"></i> Совет</h5>
+            <p class="mb-0 text-muted">
+                Заполните модель и цвет машины — это поможет пассажирам узнать вас при встрече.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
