@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Создать маршрут — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Создать маршрут</h2>
+<form method="POST" action="{{ url_for('rides.create_route_page') }}">
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label for="start_point" class="form-label">Откуда</label>
+            <input type="text" class="form-control" id="start_point" name="start_point" required placeholder="Адрес отправления">
+        </div>
+        <div class="col-md-6">
+            <label for="end_point" class="form-label">Куда</label>
+            <input type="text" class="form-control" id="end_point" name="end_point" required placeholder="Адрес назначения">
+        </div>
+    </div>
+
+    <!-- Map -->
+    <div class="card mb-3">
+        <div class="card-body p-0">
+            <div id="route_map" style="height: 350px; border-radius: 0.5rem;"></div>
+        </div>
+    </div>
+    <small class="text-muted d-block mb-2"><i class="bi bi-geo-alt"></i> Кликните по карте чтобы установить метки. Первая метка — «Откуда», вторая — «Куда».</small>
+
+    <div class="row mb-3">
+        <div class="col-md-4"><label for="departure_time" class="form-label">Время отправления</label>
+            <input type="time" class="form-control" id="departure_time" name="departure_time" required></div>
+        <div class="col-md-4"><label for="ride_date" class="form-label">Дата (опционально)</label>
+            <input type="date" class="form-control" id="ride_date" name="ride_date"></div>
+        <div class="col-md-4"><label for="available_seats" class="form-label">Мест</label>
+            <input type="number" class="form-control" id="available_seats" name="available_seats" min="1" max="8" value="3" required></div>
+    </div>
+    <div class="mb-3"><label class="form-label">Дни недели</label>
+        <div class="d-flex flex-wrap gap-2">
+            {% for i, day in [('0','Пн'),('1','Вт'),('2','Ср'),('3','Чт'),('4','Пт'),('5','Сб'),('6','Вс')] %}
+            <div class="form-check"><input class="form-check-input" type="checkbox" name="days" value="{{ i }}" id="d{{ i }}">
+                <label class="form-check-label" for="d{{ i }}">{{ day }}</label></div>
+            {% endfor %}
+        </div>
+    </div>
+    <hr><h5>Предпочтения поездки</h5>
+    <div class="row mb-3">
+        <div class="col-md-4"><label for="music_pref" class="form-label">Музыка</label>
+            <select class="form-select" id="music_pref" name="music_pref">
+                <option value="neutral" selected>Не важно</option><option value="love">Люблю музыку</option><option value="no">Без музыки</option></select></div>
+        <div class="col-md-4"><label for="talk_pref" class="form-label">Разговорчивость</label>
+            <select class="form-select" id="talk_pref" name="talk_pref">
+                <option value="neutral" selected>Не важно</option><option value="talk">Люблю поболтать</option><option value="silence">Предпочитаю тишину</option></select></div>
+        <div class="col-md-4"><label for="ac_pref" class="form-label">Кондиционер</label>
+            <select class="form-select" id="ac_pref" name="ac_pref">
+                <option value="no_matter" selected>Не важно</option><option value="must">Обязательно</option></select></div>
+    </div>
+    <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="smoking" name="smoking">
+        <label class="form-check-label" for="smoking">Курение допускается</label></div>
+    <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="zero_stress_mode" name="zero_stress_mode">
+        <label class="form-check-label" for="zero_stress_mode">Режим "По пути домой" <small class="text-muted">(без заездов во дворы)</small></label></div>
+    <button type="submit" class="btn btn-primary btn-lg">Создать маршрут</button>
+</form>
+
+{% block scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function() {
+    // Init map
+    var map = L.map('route_map').setView([56.8380, 60.5967], 12);
+    L.tileLayer('https://tile2.maps.2gis.com/tiles?x={x}&y={y}&z={z}', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    var markers = [];
+    var routeLine = null;
+    var clickPhase = 0; // 0 = set start, 1 = set end, 2 = reset
+
+    var startIcon = L.divIcon({html: '<div style="background:#28a745;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;">A</div>', iconSize: [28,28], className: ''});
+    var endIcon = L.divIcon({html: '<div style="background:#dc3545;color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;">B</div>', iconSize: [28,28], className: ''});
+
+    map.on('click', function(e) {
+        var lat = e.latlng.lat, lng = e.latlng.lng;
+        if (clickPhase === 0) {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            var m = L.marker([lat, lng], {icon: startIcon, draggable: true}).addTo(map).bindPopup('Откуда');
+            markers.push(m);
+            document.getElementById('start_point').value = lat.toFixed(4) + ', ' + lng.toFixed(4);
+            m.on('dragend', function(ev) {
+                var p = ev.target.getLatLng();
+                document.getElementById('start_point').value = p.lat.toFixed(4) + ', ' + p.lng.toFixed(4);
+                updateRoute();
+            });
+            clickPhase = 1;
+        } else if (clickPhase === 1) {
+            var m2 = L.marker([lat, lng], {icon: endIcon, draggable: true}).addTo(map).bindPopup('Куда');
+            markers.push(m2);
+            document.getElementById('end_point').value = lat.toFixed(4) + ', ' + lng.toFixed(4);
+            m2.on('dragend', function(ev) {
+                var p = ev.target.getLatLng();
+                document.getElementById('end_point').value = p.lat.toFixed(4) + ', ' + p.lng.toFixed(4);
+                updateRoute();
+            });
+            clickPhase = 2;
+            updateRoute();
+        } else {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+            var m = L.marker([lat, lng], {icon: startIcon, draggable: true}).addTo(map).bindPopup('Откуда');
+            markers.push(m);
+            document.getElementById('start_point').value = lat.toFixed(4) + ', ' + lng.toFixed(4);
+            document.getElementById('end_point').value = '';
+            m.on('dragend', function(ev) {
+                var p = ev.target.getLatLng();
+                document.getElementById('start_point').value = p.lat.toFixed(4) + ', ' + p.lng.toFixed(4);
+                updateRoute();
+            });
+            clickPhase = 1;
+        }
+    });
+
+    function updateRoute() {
+        if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+        if (markers.length >= 2) {
+            var pts = markers.map(m => m.getLatLng());
+            routeLine = L.polyline(pts, {color: '#0d6efd', weight: 4}).addTo(map);
+            map.fitBounds(routeLine.getBounds(), {padding: [30, 30]});
+        }
+    }
+})();
+</script>
+{% endblock %}
+{% endblock %}

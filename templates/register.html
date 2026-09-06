@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — Попутка ИИ{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6 col-lg-4">
+    <div class="card shadow"><div class="card-body">
+        <h2 class="card-title text-center mb-4">Регистрация</h2>
+        <form method="POST" action="{{ url_for('auth.register') }}">
+            <div class="mb-3"><label for="full_name" class="form-label">ФИО</label>
+                <input type="text" class="form-control" id="full_name" name="full_name" required></div>
+            <div class="mb-3"><label for="email" class="form-label">Email {% if not allow_any_email %}(@stud.urfu.ru){% endif %}</label>
+                <input type="email" class="form-control" id="email" name="email" required placeholder="{% if allow_any_email %}your@email.com{% else %}ivanov@stud.urfu.ru{% endif %}"></div>
+            <div class="mb-3"><label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required minlength="6"></div>
+            <div class="mb-3"><label for="role" class="form-label">Роль</label>
+                <select class="form-select" id="role" name="role">
+                    <option value="passenger">Пассажир</option>
+                    <option value="driver">Водитель</option>
+                    <option value="both">И то, и другое</option>
+                </select></div>
+            <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+        </form>
+        <p class="text-center mt-3">Уже есть аккаунт? <a href="{{ url_for('auth.login') }}">Войти</a></p>
+    </div></div>
+</div></div>
+{% endblock %}

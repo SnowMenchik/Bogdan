@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Личный кабинет — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Добро пожаловать, {{ current_user.full_name }}!</h2>
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Мои маршруты</h5>
+                <a href="{{ url_for('rides.create_route_page') }}" class="btn btn-sm btn-primary">+ Создать</a>
+            </div>
+            <div class="card-body">
+                {% if my_rides %}
+                    <ul class="list-group list-group-flush">
+                        {% for ride in my_rides %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div><strong>{{ ride.start_point }}</strong> &rarr; <strong>{{ ride.end_point }}</strong>
+                                    <br><small class="text-muted">{{ ride.departure_datetime.strftime('%d.%m.%Y %H:%M') }}</small></div>
+                                <span class="badge bg-{{ 'success' if ride.status == 'completed' else 'primary' if ride.status == 'planned' else 'warning' }}">{{ ride.status }}</span>
+                                <a href="{{ url_for('rides.ride_detail', ride_id=ride.id) }}" class="btn btn-sm btn-outline-primary">Подробнее</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}<p class="text-muted">У вас пока нет маршрутов.</p>{% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Мои запросы</h5>
+                <a href="{{ url_for('rides.create_request_page') }}" class="btn btn-sm btn-success">+ Найти</a>
+            </div>
+            <div class="card-body">
+                {% if my_requests %}
+                    <ul class="list-group list-group-flush">
+                        {% for req in my_requests %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div><strong>{{ req.start_point }}</strong> &rarr; <strong>{{ req.end_point }}</strong>
+                                    <br><small class="text-muted">{{ req.desired_departure_time.strftime('%d.%m.%Y %H:%M') }}</small></div>
+                                <span class="badge bg-{{ 'success' if req.status == 'matched' else 'info' if req.status == 'open' else 'secondary' }}">{{ 'Открыт' if req.status == 'open' else 'Найден' if req.status == 'matched' else req.status }}</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}<p class="text-muted">У вас пока нет запросов.</p>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card"><div class="card-body">
+            <p><strong>Email:</strong> {{ current_user.email }}</p>
+            <p><strong>Роль:</strong> {{ current_user.role }}</p>
+            <p><strong>Верифицирован:</strong> {{ 'Да' if current_user.is_verified else 'Нет' }}</p>
+            <a href="{{ url_for('users.profile') }}" class="btn btn-outline-primary">Редактировать</a>
+        </div></div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="card"><div class="card-body">
+            <h5 class="mb-2">QoL предпочтения</h5>
+            <p><strong>Музыка:</strong> {% if current_user.music_pref == 'love' %}Люблю музыку{% elif current_user.music_pref == 'no' %}Без музыки{% else %}Не важно{% endif %}</p>
+            <p><strong>Разговорчивость:</strong> {% if current_user.talk_pref == 'talk' %}Люблю поболтать{% elif current_user.talk_pref == 'silence' %}Предпочитаю тишину{% else %}Не важно{% endif %}</p>
+            <a href="{{ url_for('users.preferences') }}" class="btn btn-outline-primary">Изменить</a>
+        </div></div>
+    </div>
+</div>
+{% endblock %}

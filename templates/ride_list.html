@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Мои поездки — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Мои поездки</h2>
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <h4>Мои поездки как водитель</h4>
+        {% if my_rides %}
+            <div class="list-group">
+                {% for ride in my_rides %}
+                    <a href="{{ url_for('rides.ride_detail', ride_id=ride.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <div><strong>{{ ride.start_point }}</strong> &rarr; <strong>{{ ride.end_point }}</strong>
+                                <br><small class="text-muted">{{ ride.departure_datetime.strftime('%d.%m.%Y %H:%M') }}</small></div>
+                            <span class="badge bg-{{ 'success' if ride.status == 'completed' else 'primary' if ride.status == 'planned' else 'warning' }}">{{ ride.status }}</span>
+                        </div>
+                        <small>Мест: {{ ride.seats_available }}/{{ ride.seats_total }} | Цена: {{ ride.price_per_seat }} руб.</small>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">У вас пока нет поездок.</p>
+            <a href="{{ url_for('rides.create_route_page') }}" class="btn btn-primary">Создать маршрут</a>
+        {% endif %}
+    </div>
+    <div class="col-md-6 mb-4">
+        <h4>Мои запросы как пассажир</h4>
+        {% if my_requests %}
+            <div class="list-group">
+                {% for req in my_requests %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <div><strong>{{ req.start_point }}</strong> &rarr; <strong>{{ req.end_point }}</strong>
+                                <br><small class="text-muted">{{ req.desired_departure_time.strftime('%d.%m.%Y %H:%M') }}</small></div>
+                            <span class="badge bg-{{ 'success' if req.status == 'matched' else 'info' if req.status == 'open' else 'secondary' }}">{{ 'Открыт' if req.status == 'open' else 'Совпал' if req.status == 'matched' else req.status }}</span>
+                        </div>
+                        <div class="mt-2">
+                            {% if req.status == 'open' %}
+                                <a href="{{ url_for('matching.find_matches', request_id=req.id) }}" class="btn btn-sm btn-success">Найти</a>
+                                <form method="POST" action="{{ url_for('rides.cancel_request', request_id=req.id) }}" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Отменить запрос?')">Отменить</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">У вас пока нет запросов.</p>
+            <a href="{{ url_for('rides.create_request_page') }}" class="btn btn-success">Создать запрос</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

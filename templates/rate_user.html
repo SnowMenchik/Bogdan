@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Оценить пользователя — Попутка ИИ{% endblock %}
+{% block content %}
+<h2 class="mb-4">Оценить {{ 'пассажира' if is_driver else 'водителя' }}</h2>
+<div class="card"><div class="card-body">
+    <h5 class="card-title">{{ to_user.full_name }}</h5>
+    <p class="text-muted">Поездка: {{ ride.start_point }} &rarr; {{ ride.end_point }}</p>
+    <form method="POST" action="{{ url_for('ratings.rate_user', ride_id=ride.id, to_user_id=to_user.id) }}">
+        {% if is_driver %}
+            <h6>Критерии оценки пассажира:</h6>
+            <div class="row mb-3">
+                <div class="col-md-4"><label class="form-label">Вежливость</label>
+                    <select class="form-select" name="politeness">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+                <div class="col-md-4"><label class="form-label">Пунктуальность</label>
+                    <select class="form-select" name="punctuality_passenger">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+                <div class="col-md-4"><label class="form-label">Аккуратность</label>
+                    <select class="form-select" name="tidiness">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+            </div>
+        {% else %}
+            <h6>Критерии оценки водителя:</h6>
+            <div class="row mb-3">
+                <div class="col-md-4"><label class="form-label">Чистота</label>
+                    <select class="form-select" name="cleanliness">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+                <div class="col-md-4"><label class="form-label">Стиль вождения</label>
+                    <select class="form-select" name="driving_style">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+                <div class="col-md-4"><label class="form-label">Комфорт</label>
+                    <select class="form-select" name="comfort">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4"><label class="form-label">Коммуникация</label>
+                    <select class="form-select" name="communication">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+                <div class="col-md-4"><label class="form-label">Пунктуальность</label>
+                    <select class="form-select" name="punctuality">{% for i in range(1,6) %}<option value="{{ i }}">{{ i }}</option>{% endfor %}</select></div>
+            </div>
+        {% endif %}
+        <div class="mb-3"><label for="comment" class="form-label">Комментарий (опционально)</label>
+            <textarea class="form-control" id="comment" name="comment" rows="2"></textarea></div>
+        <button type="submit" class="btn btn-primary">Сохранить оценку</button>
+    </form>
+</div></div>
+<a href="{{ url_for('rides.ride_detail', ride_id=ride.id) }}" class="btn btn-secondary mt-3">Назад</a>
+{% endblock %}

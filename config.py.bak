@@ -1,0 +1,50 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Use C:\poputka-ai-data to avoid OneDrive cyrillic path issues with SQLite
+DB_DIR = r'C:\poputka-ai-data'
+os.makedirs(DB_DIR, exist_ok=True)
+
+SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', f'sqlite:///{DB_DIR}/poputka.db')
+# SQLite connect args for Windows compatibility
+SQLALCHEMY_ENGINE_OPTIONS = {
+    'connect_args': {'check_same_thread': False} if os.name == 'nt' else {}
+}
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+
+MOCK_2GIS = os.getenv('MOCK_2GIS', 'true').lower() == 'true'
+TWOGIS_API_KEY = os.getenv('TWOGIS_API_KEY', '')
+
+MOCK_EMAIL = os.getenv('MOCK_EMAIL', 'true').lower() == 'true'
+RUSENDER_API_KEY = os.getenv('RUSENDER_API_KEY', '')
+
+# If True, allow any email domain (not just @stud.urfu.ru)
+ALLOW_ANY_EMAIL = os.getenv('ALLOW_ANY_EMAIL', 'false').lower() == 'true'
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY', '')
+
+MOCK_COORDS = {
+    'уралмаш': (56.8927, 60.6074),
+    'урфу': (56.8389, 60.5905),
+    'урфу главное здание': (56.8389, 60.5905),
+    'площадь 1905 года': (56.8380, 60.5967),
+    'втузгородок': (56.8345, 60.6204),
+    'втузгородок 1': (56.8345, 60.6204),
+    'втузгородок 2': (56.8340, 60.6220),
+    'академический': (56.8252, 60.5769),
+    'академгородок': (56.8252, 60.5769),
+    'жк солнечный': (56.8135, 60.5735),
+    'жк академический': (56.8252, 60.5769),
+    'центр': (56.8380, 60.5967),
+    'вокзал': (56.8413, 60.5834),
+    'екб': (56.8380, 60.5967),
+    'екатеринбург': (56.8380, 60.5967),
+    'метро ботаническая': (56.8185, 60.6050),
+    'метро уральская': (56.8385, 60.5930),
+    'метро геологическая': (56.8310, 60.5940),
+    'метро чкаловская': (56.8240, 60.6120),
+}

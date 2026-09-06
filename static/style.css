@@ -1,0 +1,13 @@
+body { background-color: #f8f9fa; }
+.navbar-brand { font-weight: 700; }
+.card { border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 0.5rem; }
+.card-header { background-color: #fff; border-bottom: 1px solid #eee; font-weight: 600; }
+.badge { font-size: 0.75rem; }
+.btn-lg { padding: 0.75rem 1.5rem; }
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220,53,69,0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(220,53,69,0); }
+    100% { box-shadow: 0 0 0 0 rgba(220,53,69,0); }
+}
+.btn-danger.btn-lg { animation: pulse 2s infinite; }
+@media (max-width: 768px) { .display-4 { font-size: 2rem; } }
